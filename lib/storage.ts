@@ -61,3 +61,13 @@ export async function readUpload(storedPath: string) {
 export function uploadFullPath(storedPath: string) {
   return path.join(UPLOAD_DIR, storedPath);
 }
+
+/**
+ * Remove every uploaded file belonging to a project. All of a project's
+ * attachments and branding live under `uploads/project-<id>/`, so we drop the
+ * whole subtree. `force` makes this a no-op if the folder never existed.
+ */
+export async function deleteProjectUploads(projectId: string) {
+  const dir = path.join(UPLOAD_DIR, `project-${projectId}`);
+  await fs.rm(dir, { recursive: true, force: true });
+}

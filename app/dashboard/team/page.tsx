@@ -10,7 +10,7 @@ export default async function TeamPage() {
   const members = await listTeamMembers(user.id);
 
   return (
-    <div className="mx-auto max-w-4xl px-8 py-8">
+    <div className="mx-auto max-w-4xl px-4 py-6 sm:px-8 sm:py-8">
       <div className="mb-2 text-xs uppercase tracking-wide text-muted">Settings</div>
       <h1 className="text-2xl font-semibold tracking-tight">Team members</h1>
       <p className="mt-1 max-w-2xl text-sm text-muted">

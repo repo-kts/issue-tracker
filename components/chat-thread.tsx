@@ -97,7 +97,7 @@ function MessageRow({
         )}
 
         <div
-          className={`relative rounded-2xl px-4 py-2.5 text-sm leading-relaxed shadow-sm ring-1 transition-colors ${
+          className={`relative min-w-0 max-w-full rounded-2xl px-4 py-2.5 text-sm leading-relaxed shadow-sm ring-1 transition-colors ${
             isMine
               ? "bg-accent/15 text-text ring-accent/25"
               : "bg-[#161618] text-text ring-border"
@@ -115,7 +115,7 @@ function MessageRow({
             <p className="whitespace-pre-wrap break-words">{message.body}</p>
           )}
           {message.attachments.length > 0 && (
-            <div className={`flex flex-wrap gap-1.5 ${message.body ? "mt-2" : ""}`}>
+            <div className={`flex max-w-full min-w-0 flex-wrap gap-1.5 ${message.body ? "mt-2" : ""}`}>
               {message.attachments.map((a) => (
                 <AttachmentPreview key={a.id} attachment={a} compact />
               ))}

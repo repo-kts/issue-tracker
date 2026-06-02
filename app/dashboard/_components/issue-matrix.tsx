@@ -92,27 +92,37 @@ export function IssueMatrix({
           No issues match these filters.
         </div>
       ) : (
-        <div className="card overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border bg-[#0c0c0e] text-left text-[10px] uppercase tracking-wide text-muted">
-                <th className="px-3 py-2 font-medium">#</th>
-                <th className="px-3 py-2 font-medium">Project</th>
-                <th className="px-3 py-2 font-medium">Title</th>
-                <th className="px-3 py-2 font-medium">Status</th>
-                <th className="px-3 py-2 font-medium">Priority</th>
-                <th className="px-3 py-2 font-medium">Assignee</th>
-                <th className="px-3 py-2 font-medium">ETA</th>
-                <th className="px-3 py-2 font-medium">Opened</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((row) => (
-                <MatrixRow key={row.issueId} row={row} />
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <>
+          {/* Table view — md and up */}
+          <div className="card hidden overflow-x-auto md:block">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border bg-[#0c0c0e] text-left text-[10px] uppercase tracking-wide text-muted">
+                  <th className="px-3 py-2 font-medium">#</th>
+                  <th className="px-3 py-2 font-medium">Project</th>
+                  <th className="px-3 py-2 font-medium">Title</th>
+                  <th className="px-3 py-2 font-medium">Status</th>
+                  <th className="px-3 py-2 font-medium">Priority</th>
+                  <th className="px-3 py-2 font-medium">Assignee</th>
+                  <th className="px-3 py-2 font-medium">ETA</th>
+                  <th className="px-3 py-2 font-medium">Opened</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((row) => (
+                  <MatrixRow key={row.issueId} row={row} />
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Card view — below md */}
+          <div className="card divide-y divide-border md:hidden">
+            {filtered.map((row) => (
+              <MatrixCard key={row.issueId} row={row} />
+            ))}
+          </div>
+        </>
       )}
     </section>
   );
@@ -199,6 +209,69 @@ function MatrixRow({ row }: { row: OwnerIssueRow }) {
 
 function Cell({ children }: { children: React.ReactNode }) {
   return <td className="px-3 py-2 align-middle">{children}</td>;
+}
+
+function MatrixCard({ row }: { row: OwnerIssueRow }) {
+  const href = `/dashboard/projects/${row.projectId}/issues/${row.issueId}`;
+  const etaPast =
+    row.etaAt && row.etaAt.getTime() < Date.now() && row.status !== "resolved";
+
+  return (
+    <Link href={href} className="block px-4 py-3 hover:bg-[#0e0e10]">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex min-w-0 items-baseline gap-2">
+          <span className="shrink-0 font-mono text-[11px] text-muted">
+            #{row.iterationNumber}
+          </span>
+          <span className="truncate text-sm font-medium">
+            {row.title}
+            {row.clientApprovedAt && (
+              <span className="ml-1.5 text-[10px] text-success">✓</span>
+            )}
+          </span>
+        </div>
+        <StatusPill status={row.status} />
+      </div>
+
+      <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 pl-[1.7rem] text-xs text-muted">
+        <span className="flex items-center gap-1.5">
+          <span
+            className="h-1.5 w-1.5 shrink-0 rounded-full"
+            style={{ background: row.projectBrandColor ?? "#f97316" }}
+          />
+          <span className="truncate">{row.projectName}</span>
+        </span>
+        {row.priority !== "normal" && <PriorityPill priority={row.priority} />}
+        {row.assigneeId && row.assigneeName && (
+          <span className="flex items-center gap-1.5">
+            <span
+              className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[8px] font-semibold text-black"
+              style={{ background: row.assigneeColor ?? "#f97316" }}
+            >
+              {initials(row.assigneeName)}
+            </span>
+            <span className="truncate">{row.assigneeName}</span>
+          </span>
+        )}
+        {row.etaAt && (
+          <span className={etaPast ? "text-danger" : "text-orange-300"}>
+            ETA{" "}
+            {row.etaAt.toLocaleDateString("en-IN", {
+              day: "numeric",
+              month: "short",
+            })}
+            {etaPast && " !"}
+          </span>
+        )}
+        <span className="ml-auto shrink-0">
+          {row.createdAt.toLocaleDateString("en-IN", {
+            day: "numeric",
+            month: "short",
+          })}
+        </span>
+      </div>
+    </Link>
+  );
 }
 
 function InlineFilterGroup({

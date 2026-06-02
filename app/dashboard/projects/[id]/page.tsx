@@ -9,6 +9,7 @@ import {
 } from "@/lib/projects";
 import { PUBLIC_BASE_URL, formatINR } from "@/lib/config";
 import { CopyMagicLink } from "./copy-magic-link";
+import { DeleteProject } from "./delete-project";
 import { grantIterationsAction } from "./actions";
 import { ActivityPoller } from "@/components/activity-poller";
 import { initials, listTeamMembers } from "@/lib/team";
@@ -42,7 +43,7 @@ export default async function ProjectDetailPage({
     .reduce((sum, p) => sum + p.amountPaise, 0);
 
   return (
-    <div className="mx-auto max-w-5xl px-8 py-8">
+    <div className="mx-auto max-w-5xl px-4 py-6 sm:px-8 sm:py-8">
       <ActivityPoller scope={{ kind: "project", projectId: project.id }} />
       {created && (
         <div className="mb-6 rounded-md border border-success/40 bg-success/10 px-4 py-3 text-sm text-success">
@@ -205,6 +206,8 @@ export default async function ProjectDetailPage({
           ))}
         </div>
       )}
+
+      <DeleteProject projectId={project.id} projectName={project.name} />
     </div>
   );
 }

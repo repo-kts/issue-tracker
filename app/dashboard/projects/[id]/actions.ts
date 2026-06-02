@@ -1,10 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { and, eq, sql } from "drizzle-orm";
-import { requireUser } from "@/lib/auth";
+import { requireUser, verifyPassword } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { issues, projects } from "@/lib/db/schema";
+import { deleteProjectUploads } from "@/lib/storage";
 
 export async function updateIssueStatus(formData: FormData) {
   const user = await requireUser();
@@ -72,4 +74,44 @@ export async function grantIterationsAction(formData: FormData) {
     .where(eq(projects.id, projectId));
 
   revalidatePath(`/dashboard/projects/${projectId}`);
+}
+
+export type DeleteProjectState = { error?: string };
+
+/**
+ * Permanently delete a project after re-confirming the owner's account
+ * password. Foreign keys are ON, so removing the project row cascades to its
+ * issues, attachments, messages, events and payments; we then drop the
+ * project's uploaded files from disk. On success this redirects to the
+ * dashboard; on a bad password it returns an error and deletes nothing.
+ */
+export async function deleteProjectAction(
+  _prevState: DeleteProjectState,
+  formData: FormData,
+): Promise<DeleteProjectState> {
+  const user = await requireUser();
+  const projectId = String(formData.get("projectId") ?? "");
+  const password = String(formData.get("password") ?? "");
+
+  if (!projectId) return { error: "Missing project." };
+  if (!password) return { error: "Enter your password to confirm." };
+
+  const owns = await db
+    .select({ id: projects.id })
+    .from(projects)
+    .where(and(eq(projects.id, projectId), eq(projects.ownerId, user.id)))
+    .limit(1);
+  if (owns.length === 0) return { error: "Project not found." };
+
+  const ok = await verifyPassword(password, user.passwordHash);
+  if (!ok) return { error: "Incorrect password — the project was not deleted." };
+
+  await db.delete(projects).where(eq(projects.id, projectId));
+  // Best-effort file cleanup; never block deletion on a filesystem hiccup.
+  try {
+    await deleteProjectUploads(projectId);
+  } catch {}
+
+  revalidatePath("/dashboard");
+  redirect("/dashboard");
 }

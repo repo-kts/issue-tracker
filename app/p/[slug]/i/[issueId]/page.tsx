@@ -34,7 +34,7 @@ export default async function ClientIssueDetailPage({
   const lastActivity = lastMessage ? lastMessage.createdAt : issue.createdAt;
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-10">
+    <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-10">
       <ActivityPoller scope={{ kind: "issue", issueId: issue.id }} />
 
       <nav className="flex items-center gap-2 text-xs text-muted">

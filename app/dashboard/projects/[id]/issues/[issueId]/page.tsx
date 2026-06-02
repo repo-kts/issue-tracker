@@ -51,7 +51,7 @@ export default async function OwnerIssueDetailPage({
     issue.etaAt && issue.etaAt < new Date() && issue.status !== "resolved";
 
   return (
-    <div className="mx-auto max-w-5xl px-8 py-10">
+    <div className="mx-auto max-w-5xl px-4 py-6 sm:px-8 sm:py-10">
       <ActivityPoller scope={{ kind: "issue", issueId: issue.id }} />
 
       <Link

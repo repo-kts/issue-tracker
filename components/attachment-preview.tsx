@@ -111,10 +111,10 @@ function FileChip({
       href={url}
       target="_blank"
       title={attachment.filename}
-      className="group inline-flex max-w-[260px] items-center gap-2 rounded-full border border-border bg-[#17171b] px-3 py-1.5 text-xs transition-colors hover:border-accent/60"
+      className="group inline-flex max-w-full items-center gap-2 rounded-full border border-border bg-[#17171b] px-3 py-1.5 text-xs transition-colors hover:border-accent/60 sm:max-w-[260px]"
     >
       <span className={`shrink-0 text-sm ${accent}`}>{icon}</span>
-      <span className="truncate text-text group-hover:text-accent">
+      <span className="min-w-0 truncate text-text group-hover:text-accent">
         {attachment.filename}
       </span>
       {size && <span className="shrink-0 text-[10px] text-muted">{size}</span>}
@@ -134,10 +134,10 @@ function LinkChip({ url, label }: { url: string; label: string }) {
       target="_blank"
       rel="noopener noreferrer"
       title={url}
-      className="group inline-flex max-w-[260px] items-center gap-2 rounded-full border border-border bg-[#17171b] px-3 py-1.5 text-xs transition-colors hover:border-accent/60"
+      className="group inline-flex max-w-full items-center gap-2 rounded-full border border-border bg-[#17171b] px-3 py-1.5 text-xs transition-colors hover:border-accent/60 sm:max-w-[260px]"
     >
       <span className="shrink-0 text-sm text-blue-300">🔗</span>
-      <span className="truncate text-text group-hover:text-accent">{display}</span>
+      <span className="min-w-0 truncate text-text group-hover:text-accent">{display}</span>
       {host && display !== host && (
         <span className="shrink-0 text-[10px] text-muted">{host}</span>
       )}

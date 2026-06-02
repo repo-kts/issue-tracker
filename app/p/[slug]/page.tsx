@@ -59,7 +59,7 @@ export default async function ClientDashboardPage({
   const pct = Math.min(100, (status.iterationsUsed / Math.max(status.totalAllowed, 1)) * 100);
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-10">
+    <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-10">
       <ActivityPoller scope={{ kind: "slug", slug }} />
       <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
         <div className="min-w-0">

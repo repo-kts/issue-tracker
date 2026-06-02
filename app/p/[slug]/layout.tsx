@@ -27,7 +27,7 @@ export default async function ClientPortalLayout({
       style={brand ? ({ ["--brand" as any]: brand } as React.CSSProperties) : undefined}
     >
       <nav
-        className="border-b border-border bg-[#08080a] px-6 py-3"
+        className="border-b border-border bg-[#08080a] px-4 py-3 sm:px-6"
         style={brand ? { borderBottomColor: `${brand}33` } : undefined}
       >
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4">

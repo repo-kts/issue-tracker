@@ -54,4 +54,3 @@ Razorpay test card: `4111 1111 1111 1111`, any future expiry, any CVV.
 - `./uploads/` — attachments (gitignored)
 
 Both auto-create on first run.
-# issue-tracker
