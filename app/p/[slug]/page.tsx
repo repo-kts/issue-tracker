@@ -130,7 +130,7 @@ export default async function ClientDashboardPage({
             </Link>
           )}
         </div>
-        <div className="h-2 w-full overflow-hidden rounded-full bg-elevated">
+        <div className="h-2 w-full overflow-hidden rounded-full bg-[#17171b]">
           <div
             className="h-full transition-all"
             style={{
@@ -213,7 +213,7 @@ export default async function ClientDashboardPage({
                 <Link
                   key={issue.id}
                   href={`/p/${slug}/i/${issue.id}`}
-                  className="flex items-start gap-3 px-4 py-3 hover:bg-elevated"
+                  className="flex items-start gap-3 px-4 py-3 hover:bg-[#0e0e10]"
                 >
                   <span
                     className={`mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-medium ${
@@ -336,7 +336,7 @@ function Tabs({
             <span>{it.label}</span>
             <span
               className={`rounded-full px-1.5 py-0.5 font-mono text-[10px] ${
-                isActive ? "bg-elevated text-text" : "text-muted"
+                isActive ? "bg-[#17171b] text-text" : "text-muted"
               }`}
             >
               {count}
@@ -361,7 +361,7 @@ function IssueRow({
   return (
     <Link
       href={`/p/${slug}/i/${issue.id}`}
-      className="flex items-start gap-4 px-5 py-4 hover:bg-elevated"
+      className="flex items-start gap-4 px-5 py-4 hover:bg-[#0e0e10]"
     >
       <div className="mt-1 w-10 shrink-0 text-center">
         <span

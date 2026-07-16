@@ -57,7 +57,7 @@ export function FilterMenu({
       </button>
 
       {open && (
-        <div className="absolute left-0 top-10 z-30 w-[320px] overflow-hidden rounded-md border border-border bg-surface shadow-xl">
+        <div className="absolute left-0 top-10 z-30 w-[320px] overflow-hidden rounded-md border border-border bg-[#0c0c0e] shadow-xl">
           <div className="flex items-center justify-between border-b border-border px-3 py-2">
             <div className="text-sm font-medium">Filters</div>
             {activeCount > 0 && (
@@ -123,7 +123,7 @@ function FilterRow({
               className={`flex items-center gap-1.5 rounded px-2 py-1 text-[11px] transition-colors ${
                 active
                   ? "bg-accent text-black"
-                  : "border border-border bg-elevated text-muted hover:text-text"
+                  : "border border-border bg-[#17171b] text-muted hover:text-text"
               }`}
             >
               {o.dotColor && (

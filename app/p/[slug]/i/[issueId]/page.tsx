@@ -118,18 +118,41 @@ export default async function ClientIssueDetailPage({
         <div className="min-w-0 space-y-6">
           {issue.description && (
             <section className="card p-6">
-              <EditIssueForm
-                slug={slug}
-                issueId={issue.id}
-                initialTitle={issue.title}
-                initialDescription={issue.description ?? ""}
-                defaultEditorName={issue.submitterName ?? project.clientName}
-              />
+              <div className="mb-3 flex items-baseline justify-between">
+                <h2 className="text-xs font-medium uppercase tracking-wide text-muted">
+                  What you asked for
+                </h2>
+                <EditIssueForm
+                  slug={slug}
+                  issueId={issue.id}
+                  initialTitle={issue.title}
+                  initialDescription={issue.description ?? ""}
+                  defaultEditorName={issue.submitterName ?? project.clientName}
+                />
+              </div>
+              <p className="whitespace-pre-wrap text-sm leading-relaxed">
+                {issue.description}
+              </p>
             </section>
           )}
 
           {issue.attachments.length > 0 && (
-            <AttachmentsSection attachments={issue.attachments} />
+            <section className="card p-5">
+              <div className="mb-3 flex items-baseline justify-between">
+                <h2 className="text-xs font-medium uppercase tracking-wide text-muted">
+                  Attachments
+                </h2>
+                <span className="text-[10px] text-muted">
+                  {issue.attachments.length} item
+                  {issue.attachments.length === 1 ? "" : "s"}
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {issue.attachments.map((a) => (
+                  <AttachmentPreview key={a.id} attachment={a} compact />
+                ))}
+              </div>
+            </section>
           )}
 
           <ChatThread
@@ -151,45 +174,6 @@ export default async function ClientIssueDetailPage({
         <Timeline entries={timeline} viewerType="client" />
       </div>
     </div>
-  );
-}
-
-function AttachmentsSection({
-  attachments,
-}: {
-  attachments: React.ComponentProps<typeof AttachmentPreview>["attachment"][];
-}) {
-  const media = attachments.filter(
-    (a) => a.kind === "image" || a.kind === "video",
-  );
-  const rest = attachments.filter(
-    (a) => a.kind !== "image" && a.kind !== "video",
-  );
-  return (
-    <section className="card p-5">
-      <div className="mb-3 flex items-baseline justify-between">
-        <h2 className="text-xs font-medium uppercase tracking-wide text-muted">
-          Attachments
-        </h2>
-        <span className="text-[10px] text-muted">
-          {attachments.length} item{attachments.length === 1 ? "" : "s"}
-        </span>
-      </div>
-      {media.length > 0 && (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {media.map((a) => (
-            <AttachmentPreview key={a.id} attachment={a} />
-          ))}
-        </div>
-      )}
-      {rest.length > 0 && (
-        <div className={`flex flex-wrap gap-2 ${media.length > 0 ? "mt-3" : ""}`}>
-          {rest.map((a) => (
-            <AttachmentPreview key={a.id} attachment={a} compact />
-          ))}
-        </div>
-      )}
-    </section>
   );
 }
 

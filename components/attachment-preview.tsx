@@ -1,5 +1,3 @@
-import { ImageLightboxThumb } from "./image-lightbox-thumb";
-
 export function AttachmentPreview({
   attachment,
   compact,
@@ -31,7 +29,16 @@ export function AttachmentPreview({
   if (compact) return <FileChip attachment={attachment} url={url} />;
 
   if (attachment.kind === "image") {
-    return <ImageLightboxThumb url={url} filename={attachment.filename} />;
+    return (
+      <a
+        href={url}
+        target="_blank"
+        className="block overflow-hidden rounded-md border border-border hover:border-accent/60"
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={url} alt={attachment.filename} className="h-32 w-full object-cover" />
+      </a>
+    );
   }
   if (attachment.kind === "video") {
     return (
@@ -44,7 +51,7 @@ export function AttachmentPreview({
   }
   if (attachment.kind === "audio") {
     return (
-      <div className="flex flex-col gap-2 rounded-md border border-border bg-elevated p-3">
+      <div className="flex flex-col gap-2 rounded-md border border-border bg-[#17171b] p-3">
         <div className="truncate text-xs text-muted">🎙 {attachment.filename}</div>
         <audio controls src={url} className="w-full" />
       </div>
@@ -54,7 +61,7 @@ export function AttachmentPreview({
     <a
       href={url}
       target="_blank"
-      className="flex items-center gap-2 truncate rounded-md border border-border bg-elevated p-3 text-sm hover:border-accent/60"
+      className="flex items-center gap-2 truncate rounded-md border border-border bg-[#17171b] p-3 text-sm hover:border-accent/60"
     >
       📎 {attachment.filename}
     </a>
@@ -72,7 +79,7 @@ function LinkCard({ url, label }: { url: string; label: string }) {
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex flex-col gap-1 rounded-md border border-border bg-elevated p-3 hover:border-accent/60"
+      className="flex flex-col gap-1 rounded-md border border-border bg-[#17171b] p-3 hover:border-accent/60"
     >
       <div className="flex items-center gap-2 text-sm font-medium">
         <span>🔗</span>
@@ -104,7 +111,7 @@ function FileChip({
       href={url}
       target="_blank"
       title={attachment.filename}
-      className="group inline-flex max-w-full items-center gap-2 rounded-full border border-border bg-elevated px-3 py-1.5 text-xs transition-colors hover:border-accent/60 sm:max-w-[260px]"
+      className="group inline-flex max-w-full items-center gap-2 rounded-full border border-border bg-[#17171b] px-3 py-1.5 text-xs transition-colors hover:border-accent/60 sm:max-w-[260px]"
     >
       <span className={`shrink-0 text-sm ${accent}`}>{icon}</span>
       <span className="min-w-0 truncate text-text group-hover:text-accent">
@@ -127,7 +134,7 @@ function LinkChip({ url, label }: { url: string; label: string }) {
       target="_blank"
       rel="noopener noreferrer"
       title={url}
-      className="group inline-flex max-w-full items-center gap-2 rounded-full border border-border bg-elevated px-3 py-1.5 text-xs transition-colors hover:border-accent/60 sm:max-w-[260px]"
+      className="group inline-flex max-w-full items-center gap-2 rounded-full border border-border bg-[#17171b] px-3 py-1.5 text-xs transition-colors hover:border-accent/60 sm:max-w-[260px]"
     >
       <span className="shrink-0 text-sm text-blue-300">🔗</span>
       <span className="min-w-0 truncate text-text group-hover:text-accent">{display}</span>

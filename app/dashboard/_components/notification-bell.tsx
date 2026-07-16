@@ -96,7 +96,7 @@ export function NotificationBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-10 z-50 w-[340px] overflow-hidden rounded-md border border-border bg-surface shadow-xl">
+        <div className="absolute right-0 top-10 z-50 w-[340px] overflow-hidden rounded-md border border-border bg-[#0c0c0e] shadow-xl">
           <div className="flex items-center justify-between border-b border-border px-3 py-2">
             <div className="text-sm font-medium">
               Notifications{unread > 0 && <span className="ml-2 text-xs text-muted">({unread} new)</span>}
@@ -146,7 +146,7 @@ export function NotificationBell() {
                           <span className="text-text">{n.issueTitle}</span>
                         </div>
                         {n.body && (
-                          <p className="mt-1 line-clamp-1 rounded border border-border bg-elevated px-2 py-1 text-[11px] text-muted">
+                          <p className="mt-1 line-clamp-1 rounded border border-border bg-[#17171b] px-2 py-1 text-[11px] text-muted">
                             {n.body}
                           </p>
                         )}

@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { NotificationBell } from "./notification-bell";
-import { ThemeToggle } from "@/components/theme-toggle";
 
 /**
  * Responsive shell around the (server-rendered) Sidebar.
@@ -37,7 +36,7 @@ export function SidebarShell({ children }: { children: React.ReactNode }) {
   return (
     <>
       {/* Mobile top bar */}
-      <div className="sticky top-0 z-30 flex items-center gap-3 border-b border-border bg-surface px-4 py-3 lg:hidden">
+      <div className="sticky top-0 z-30 flex items-center gap-3 border-b border-border bg-[#08080a] px-4 py-3 lg:hidden">
         <button
           type="button"
           onClick={() => setOpen(true)}
@@ -62,8 +61,7 @@ export function SidebarShell({ children }: { children: React.ReactNode }) {
           <span className="inline-block h-2 w-2 rounded-full bg-accent" />
           issue<span className="text-accent">Tracker</span>
         </Link>
-        <div className="ml-auto flex items-center gap-2">
-          <ThemeToggle />
+        <div className="ml-auto">
           <NotificationBell />
         </div>
       </div>
@@ -77,11 +75,9 @@ export function SidebarShell({ children }: { children: React.ReactNode }) {
         />
       )}
 
-      {/* Drawer (mobile) / sticky column (desktop). Sticky so the sidebar
-          stays pinned in view while the main content scrolls, instead of
-          scrolling away and leaving an empty gap. */}
+      {/* Drawer (mobile) / static column (desktop) */}
       <div
-        className={`fixed inset-y-0 left-0 z-50 transition-transform duration-200 ease-out lg:sticky lg:top-0 lg:z-auto lg:h-screen lg:translate-x-0 lg:self-start ${
+        className={`fixed inset-y-0 left-0 z-50 transition-transform duration-200 ease-out lg:static lg:z-auto lg:translate-x-0 ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >

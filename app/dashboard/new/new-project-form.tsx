@@ -108,7 +108,7 @@ export function NewProjectForm() {
               }}
             />
             {logoPreview && (
-              <div className="mt-2 flex items-center gap-3 rounded-md border border-border bg-elevated p-2">
+              <div className="mt-2 flex items-center gap-3 rounded-md border border-border bg-[#17171b] p-2">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={logoPreview} alt="Logo preview" className="h-12 w-12 rounded object-contain" />
                 <span className="text-xs text-muted">Logo preview</span>

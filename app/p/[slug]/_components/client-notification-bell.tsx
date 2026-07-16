@@ -88,7 +88,7 @@ export function ClientNotificationBell({ slug }: { slug: string }) {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-11 z-40 w-[340px] overflow-hidden rounded-md border border-border bg-surface shadow-xl">
+        <div className="absolute right-0 top-11 z-40 w-[340px] overflow-hidden rounded-md border border-border bg-[#0c0c0e] shadow-xl">
           <div className="flex items-center justify-between border-b border-border px-3 py-2">
             <div className="text-sm font-medium">
               Updates
@@ -168,7 +168,7 @@ export function ClientNotificationBell({ slug }: { slug: string }) {
                           )}
                         </div>
                         {n.body && (
-                          <p className="mt-1 line-clamp-1 rounded border border-border bg-elevated px-2 py-1 text-[11px] text-muted">
+                          <p className="mt-1 line-clamp-1 rounded border border-border bg-[#17171b] px-2 py-1 text-[11px] text-muted">
                             {n.body}
                           </p>
                         )}
