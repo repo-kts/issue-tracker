@@ -2,6 +2,8 @@
 
 import { useRef, useState } from "react";
 import { submitIssueAction } from "./actions";
+import { extractPastedFiles } from "@/lib/clipboard";
+import { LocalFilePreview } from "@/components/local-file-preview";
 
 type RecState = "idle" | "recording" | "ready";
 type LinkItem = { url: string; label: string };
@@ -108,8 +110,13 @@ export function SubmitIssueForm({ slug }: { slug: string }) {
     }
   };
 
+  const handlePaste = (e: React.ClipboardEvent) => {
+    const pasted = extractPastedFiles(e);
+    if (pasted.length > 0) setFiles((prev) => [...prev, ...pasted]);
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={handleSubmit} onPaste={handlePaste} className="space-y-5">
       <div>
         <label className="label" htmlFor="title">What needs to change?</label>
         <input id="title" name="title" required className="input" placeholder="E.g. Make the hero headline shorter" />
@@ -145,7 +152,7 @@ export function SubmitIssueForm({ slug }: { slug: string }) {
           </div>
         )}
         {recState === "ready" && recBlob && (
-          <div className="flex flex-col gap-2 rounded-md border border-border bg-[#17171b] p-3">
+          <div className="flex flex-col gap-2 rounded-md border border-border bg-elevated p-3">
             <audio controls src={URL.createObjectURL(recBlob)} className="w-full" />
             <div className="flex justify-between text-xs">
               <span className="text-muted">{recDuration}s — will be attached on submit</span>
@@ -178,24 +185,15 @@ export function SubmitIssueForm({ slug }: { slug: string }) {
         >
           + Add files
         </button>
+        <p className="mt-1 text-xs text-muted">
+          Tip: you can also paste a screenshot directly (Ctrl+V / ⌘V).
+        </p>
         {files.length > 0 && (
-          <ul className="mt-3 space-y-1">
+          <div className="mt-3 flex flex-wrap gap-2">
             {files.map((f, i) => (
-              <li key={i} className="flex items-center justify-between rounded-md border border-border bg-[#17171b] px-3 py-2 text-sm">
-                <span className="truncate">
-                  {f.type.startsWith("image/") && "🖼 "}
-                  {f.type.startsWith("video/") && "🎬 "}
-                  {f.type.startsWith("audio/") && "🎙 "}
-                  {!f.type.startsWith("image/") && !f.type.startsWith("video/") && !f.type.startsWith("audio/") && "📎 "}
-                  {f.name}
-                  <span className="ml-2 text-muted">({Math.round(f.size / 1024)} KB)</span>
-                </span>
-                <button type="button" onClick={() => removeFile(i)} className="text-danger hover:underline">
-                  Remove
-                </button>
-              </li>
+              <LocalFilePreview key={i} file={f} onRemove={() => removeFile(i)} />
             ))}
-          </ul>
+          </div>
         )}
       </div>
 
@@ -211,7 +209,7 @@ export function SubmitIssueForm({ slug }: { slug: string }) {
             {links.map((link, i) => (
               <div
                 key={i}
-                className="flex flex-col gap-2 rounded-md border border-border bg-[#17171b] p-3 md:flex-row md:items-center"
+                className="flex flex-col gap-2 rounded-md border border-border bg-elevated p-3 md:flex-row md:items-center"
               >
                 <input
                   type="url"

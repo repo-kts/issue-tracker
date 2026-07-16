@@ -19,7 +19,7 @@ export function ChatThread({
 }) {
   return (
     <div className="card flex flex-col overflow-hidden">
-      <div className="flex items-center justify-between border-b border-border bg-[#0c0c0e] px-5 py-3">
+      <div className="flex items-center justify-between border-b border-border bg-surface px-5 py-3">
         <div className="text-sm font-medium">Conversation</div>
         <span className="text-xs text-muted">
           {messages.length} message{messages.length === 1 ? "" : "s"}
@@ -43,7 +43,7 @@ export function ChatThread({
         )}
       </div>
 
-      <div className="border-t border-border bg-[#0a0a0c] px-5 py-4">
+      <div className="border-t border-border bg-bg px-5 py-4">
         {disabled ? (
           <div className="rounded-md border border-border bg-panel px-3 py-2 text-sm text-muted">
             {disabledReason ?? "Replies are disabled."}
@@ -100,7 +100,7 @@ function MessageRow({
           className={`relative min-w-0 max-w-full rounded-2xl px-4 py-2.5 text-sm leading-relaxed shadow-sm ring-1 transition-colors ${
             isMine
               ? "bg-accent/15 text-text ring-accent/25"
-              : "bg-[#161618] text-text ring-border"
+              : "bg-elevated text-text ring-border"
           } ${
             isMine
               ? isGrouped

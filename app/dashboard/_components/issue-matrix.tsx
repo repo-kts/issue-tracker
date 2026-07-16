@@ -97,7 +97,7 @@ export function IssueMatrix({
           <div className="card hidden overflow-x-auto md:block">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border bg-[#0c0c0e] text-left text-[10px] uppercase tracking-wide text-muted">
+                <tr className="border-b border-border bg-surface text-left text-[10px] uppercase tracking-wide text-muted">
                   <th className="px-3 py-2 font-medium">#</th>
                   <th className="px-3 py-2 font-medium">Project</th>
                   <th className="px-3 py-2 font-medium">Title</th>
@@ -134,7 +134,7 @@ function MatrixRow({ row }: { row: OwnerIssueRow }) {
     row.etaAt && row.etaAt.getTime() < Date.now() && row.status !== "resolved";
 
   return (
-    <tr className="group border-b border-border last:border-b-0 hover:bg-[#0e0e10]">
+    <tr className="group border-b border-border last:border-b-0 hover:bg-elevated">
       <Cell>
         <Link href={href} className="block font-mono text-[11px] text-muted group-hover:text-text">
           #{row.iterationNumber}
@@ -217,7 +217,7 @@ function MatrixCard({ row }: { row: OwnerIssueRow }) {
     row.etaAt && row.etaAt.getTime() < Date.now() && row.status !== "resolved";
 
   return (
-    <Link href={href} className="block px-4 py-3 hover:bg-[#0e0e10]">
+    <Link href={href} className="block px-4 py-3 hover:bg-elevated">
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-baseline gap-2">
           <span className="shrink-0 font-mono text-[11px] text-muted">

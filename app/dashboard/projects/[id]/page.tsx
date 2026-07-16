@@ -14,17 +14,39 @@ import { grantIterationsAction } from "./actions";
 import { ActivityPoller } from "@/components/activity-poller";
 import { initials, listTeamMembers } from "@/lib/team";
 
+const STATUS_FILTERS = [
+  { key: "all", label: "All" },
+  { key: "open", label: "Open" },
+  { key: "in_progress", label: "In progress" },
+  { key: "resolved", label: "Resolved" },
+  { key: "rejected", label: "Declined" },
+] as const;
+
+const PRIORITY_FILTERS = [
+  { key: "all", label: "All priorities" },
+  { key: "urgent", label: "Urgent" },
+  { key: "high", label: "High" },
+  { key: "normal", label: "Normal" },
+] as const;
+
 export default async function ProjectDetailPage({
   params,
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ created?: string }>;
+  searchParams: Promise<{ created?: string; status?: string; priority?: string }>;
 }) {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
   const { id } = await params;
-  const { created } = await searchParams;
+  const { created, status: statusRaw, priority: priorityRaw } = await searchParams;
+
+  const statusFilter = STATUS_FILTERS.some((f) => f.key === statusRaw)
+    ? (statusRaw as string)
+    : "all";
+  const priorityFilter = PRIORITY_FILTERS.some((f) => f.key === priorityRaw)
+    ? (priorityRaw as string)
+    : "all";
 
   const project = await getProjectByIdForOwner(id, user.id);
   if (!project) notFound();
@@ -36,6 +58,13 @@ export default async function ProjectDetailPage({
     listTeamMembers(user.id),
   ]);
   const teamMap = new Map(team.map((m) => [m.id, m]));
+
+  const visibleIssues = issueList.filter((i) => {
+    if (statusFilter !== "all" && i.status !== statusFilter) return false;
+    if (priorityFilter !== "all" && (i.priority ?? "normal") !== priorityFilter)
+      return false;
+    return true;
+  });
 
   const magicLink = `${PUBLIC_BASE_URL}/p/${project.slug}`;
   const paidTotal = payments
@@ -123,7 +152,7 @@ export default async function ProjectDetailPage({
         </p>
       </div>
 
-      <div className="mb-6 h-2 w-full overflow-hidden rounded-full bg-[#17171b]">
+      <div className="mb-6 h-2 w-full overflow-hidden rounded-full bg-elevated">
         <div
           className="h-full transition-all"
           style={{
@@ -180,7 +209,11 @@ export default async function ProjectDetailPage({
 
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-lg font-medium">Change requests</h2>
-        <span className="text-sm text-muted">{issueList.length} total</span>
+        <span className="text-sm text-muted">
+          {statusFilter === "all" && priorityFilter === "all"
+            ? `${issueList.length} total`
+            : `${visibleIssues.length} of ${issueList.length}`}
+        </span>
       </div>
 
       {issueList.length === 0 ? (
@@ -192,19 +225,46 @@ export default async function ProjectDetailPage({
           </p>
         </div>
       ) : (
-        <div className="card divide-y divide-border">
-          {issueList.map((issue) => (
-            <IssueRow
-              key={issue.id}
-              issue={issue}
-              projectId={project.id}
-              freeLimit={status.freeLimit}
-              assignee={
-                issue.assigneeId ? teamMap.get(issue.assigneeId) ?? null : null
-              }
+        <>
+          <div className="mb-3 flex flex-wrap gap-2">
+            <InlineFilterGroup
+              basePath={`/dashboard/projects/${project.id}`}
+              label="Status"
+              name="status"
+              current={statusFilter}
+              options={STATUS_FILTERS as unknown as { key: string; label: string }[]}
+              siblings={{ priority: priorityFilter }}
             />
-          ))}
-        </div>
+            <InlineFilterGroup
+              basePath={`/dashboard/projects/${project.id}`}
+              label="Priority"
+              name="priority"
+              current={priorityFilter}
+              options={PRIORITY_FILTERS as unknown as { key: string; label: string }[]}
+              siblings={{ status: statusFilter }}
+            />
+          </div>
+
+          {visibleIssues.length === 0 ? (
+            <div className="card px-6 py-12 text-center text-sm text-muted">
+              No requests match these filters.
+            </div>
+          ) : (
+            <div className="card divide-y divide-border">
+              {visibleIssues.map((issue) => (
+                <IssueRow
+                  key={issue.id}
+                  issue={issue}
+                  projectId={project.id}
+                  freeLimit={status.freeLimit}
+                  assignee={
+                    issue.assigneeId ? teamMap.get(issue.assigneeId) ?? null : null
+                  }
+                />
+              ))}
+            </div>
+          )}
+        </>
       )}
 
       <DeleteProject projectId={project.id} projectName={project.name} />
@@ -227,7 +287,7 @@ function IssueRow({
   return (
     <Link
       href={`/dashboard/projects/${projectId}/issues/${issue.id}`}
-      className="flex items-start gap-4 px-5 py-4 hover:bg-[#0e0e10]"
+      className="flex items-start gap-4 px-5 py-4 hover:bg-elevated"
     >
       <div className="mt-0.5 flex w-12 shrink-0 justify-center">
         <span
@@ -270,6 +330,51 @@ function IssueRow({
       )}
       <div className="shrink-0 self-center text-muted">›</div>
     </Link>
+  );
+}
+
+function InlineFilterGroup({
+  basePath,
+  label,
+  name,
+  current,
+  options,
+  siblings,
+}: {
+  basePath: string;
+  label: string;
+  name: string;
+  current: string;
+  options: { key: string; label: string }[];
+  siblings: Record<string, string>;
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-1 rounded-md border border-border bg-panel p-1">
+      <span className="px-1 text-[10px] uppercase tracking-wide text-muted">
+        {label}
+      </span>
+      {options.map((o) => {
+        const params = new URLSearchParams();
+        for (const [k, v] of Object.entries(siblings)) {
+          if (v && v !== "all") params.set(k, v);
+        }
+        if (o.key !== "all") params.set(name, o.key);
+        const qs = params.toString();
+        const active = current === o.key;
+        return (
+          <Link
+            key={o.key}
+            href={`${basePath}${qs ? `?${qs}` : ""}`}
+            scroll={false}
+            className={`rounded px-2 py-1 text-[11px] transition-colors ${
+              active ? "bg-accent text-black" : "text-muted hover:text-text"
+            }`}
+          >
+            {o.label}
+          </Link>
+        );
+      })}
+    </div>
   );
 }
 

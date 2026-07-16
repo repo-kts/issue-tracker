@@ -31,7 +31,7 @@ export default async function PayPage({
           you can submit one more change request immediately.
         </p>
 
-        <div className="mb-6 rounded-md border border-border bg-[#17171b] p-4">
+        <div className="mb-6 rounded-md border border-border bg-elevated p-4">
           <div className="flex justify-between text-sm">
             <span className="text-muted">1 additional iteration</span>
             <span className="font-medium">{formatINR(PRICE_PER_EXTRA_ITERATION_PAISE)}</span>

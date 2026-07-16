@@ -1,6 +1,8 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { extractPastedFiles } from "@/lib/clipboard";
+import { LocalFilePreview } from "@/components/local-file-preview";
 
 type LinkItem = { url: string; label: string };
 
@@ -55,8 +57,18 @@ export function MessageComposer({
       ? "Reply to client — they'll see this in their portal"
       : "Type a message to the team";
 
+  const handlePaste = (e: React.ClipboardEvent) => {
+    const pasted = extractPastedFiles(e);
+    if (pasted.length > 0) setFiles((prev) => [...prev, ...pasted]);
+  };
+
   return (
-    <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-2">
+    <form
+      ref={formRef}
+      onSubmit={handleSubmit}
+      onPaste={handlePaste}
+      className="flex flex-col gap-2"
+    >
       {viewerType === "client" && (
         <input
           name="authorName"
@@ -80,26 +92,16 @@ export function MessageComposer({
       />
 
       {files.length > 0 && (
-        <ul className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2">
           {files.map((f, i) => (
-            <li
+            <LocalFilePreview
               key={i}
-              className="flex items-center gap-2 rounded-md border border-border bg-[#17171b] px-2 py-1 text-xs"
-            >
-              <span>
-                {f.type.startsWith("image/") ? "🖼" : f.type.startsWith("video/") ? "🎬" : f.type.startsWith("audio/") ? "🎙" : "📎"}
-              </span>
-              <span className="max-w-[140px] truncate">{f.name}</span>
-              <button
-                type="button"
-                onClick={() => setFiles((prev) => prev.filter((_, idx) => idx !== i))}
-                className="text-muted hover:text-danger"
-              >
-                ×
-              </button>
-            </li>
+              file={f}
+              compact
+              onRemove={() => setFiles((prev) => prev.filter((_, idx) => idx !== i))}
+            />
           ))}
-        </ul>
+        </div>
       )}
 
       {showLinkInput && (

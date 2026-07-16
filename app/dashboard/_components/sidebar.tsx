@@ -56,7 +56,7 @@ export async function Sidebar({
   }
 
   return (
-    <aside className="flex h-screen w-72 shrink-0 flex-col border-r border-border bg-[#08080a]">
+    <aside className="flex h-screen w-72 shrink-0 flex-col border-r border-border bg-surface">
       <div className="border-b border-border px-5 py-4">
         <Link href="/dashboard" className="flex items-center gap-2 font-mono text-sm">
           <span className="inline-block h-2 w-2 rounded-full bg-accent" />
@@ -112,7 +112,7 @@ export async function Sidebar({
                         className={`shrink-0 rounded-full px-1.5 py-0.5 font-mono text-[10px] ${
                           overFree
                             ? "bg-accent/20 text-accent"
-                            : "bg-[#17171b] text-muted"
+                            : "bg-elevated text-muted"
                         }`}
                       >
                         {p.totalIssues}/{p.freeIterationLimit + p.paidIterations}
