@@ -42,7 +42,7 @@ export default async function SearchPage({
             <Link
               key={r.issueId}
               href={`/dashboard/projects/${r.projectId}/issues/${r.issueId}`}
-              className="flex items-start gap-4 px-5 py-4 hover:bg-[#0e0e10]"
+              className="flex items-start gap-4 px-5 py-4 hover:bg-elevated"
             >
               <div className="mt-0.5 w-12 shrink-0 text-center">
                 <span className="font-mono text-xs text-muted">#{r.iterationNumber}</span>

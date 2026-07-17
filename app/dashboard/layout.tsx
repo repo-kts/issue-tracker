@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { Sidebar } from "./_components/sidebar";
 import { SidebarShell } from "./_components/sidebar-shell";
 import { NotificationBell } from "./_components/notification-bell";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default async function DashboardLayout({
   children,
@@ -35,7 +36,8 @@ export default async function DashboardLayout({
       </SidebarShell>
       <main className="relative min-w-0 flex-1 overflow-x-hidden">
         <div className="pointer-events-none absolute right-6 top-4 z-30 hidden lg:block">
-          <div className="pointer-events-auto">
+          <div className="pointer-events-auto flex items-center gap-2">
+            <ThemeToggle />
             <NotificationBell />
           </div>
         </div>

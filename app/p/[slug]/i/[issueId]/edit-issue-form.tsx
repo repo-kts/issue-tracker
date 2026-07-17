@@ -2,6 +2,8 @@
 
 import { useRef, useState } from "react";
 import { updateIssueDetailsAction } from "./actions";
+import { extractPastedFiles } from "@/lib/clipboard";
+import { LocalFilePreview } from "@/components/local-file-preview";
 
 type RecState = "idle" | "recording" | "ready";
 type LinkItem = { url: string; label: string };
@@ -116,18 +118,33 @@ export function EditIssueForm({
 
   if (!open) {
     return (
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="btn-secondary text-xs"
-      >
-        ✎ Edit / Add more details
-      </button>
+      <>
+        <div className="mb-3 flex items-baseline justify-between gap-3">
+          <h2 className="text-xs font-medium uppercase tracking-wide text-muted">
+            What you asked for
+          </h2>
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="btn-secondary shrink-0 text-xs"
+          >
+            ✎ Edit / Add more details
+          </button>
+        </div>
+        <p className="whitespace-pre-wrap text-sm leading-relaxed">
+          {initialDescription}
+        </p>
+      </>
     );
   }
 
+  const handlePaste = (e: React.ClipboardEvent) => {
+    const pasted = extractPastedFiles(e);
+    if (pasted.length > 0) setFiles((prev) => [...prev, ...pasted]);
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="card mt-4 space-y-4 border-accent/40 p-5">
+    <form onSubmit={handleSubmit} onPaste={handlePaste} className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="text-sm font-medium">Edit this request</div>
         <button type="button" onClick={reset} className="text-xs text-muted hover:text-text">
@@ -177,7 +194,7 @@ export function EditIssueForm({
           </div>
         )}
         {recState === "ready" && recBlob && (
-          <div className="flex flex-col gap-2 rounded-md border border-border bg-[#17171b] p-3">
+          <div className="flex flex-col gap-2 rounded-md border border-border bg-elevated p-3">
             <audio controls src={URL.createObjectURL(recBlob)} className="w-full" />
             <div className="flex justify-between text-xs">
               <span className="text-muted">{recDuration}s — will be attached on save</span>
@@ -210,28 +227,19 @@ export function EditIssueForm({
         >
           + Add files
         </button>
+        <p className="mt-1 text-xs text-muted">
+          Tip: you can also paste a screenshot directly (Ctrl+V / ⌘V).
+        </p>
         {files.length > 0 && (
-          <ul className="mt-2 space-y-1">
+          <div className="mt-2 flex flex-wrap gap-2">
             {files.map((f, i) => (
-              <li
+              <LocalFilePreview
                 key={i}
-                className="flex items-center justify-between rounded-md border border-border bg-[#17171b] px-3 py-1.5 text-xs"
-              >
-                <span className="truncate">
-                  {f.type.startsWith("image/") ? "🖼 " : f.type.startsWith("video/") ? "🎬 " : "📎 "}
-                  {f.name}
-                  <span className="ml-2 text-muted">({Math.round(f.size / 1024)} KB)</span>
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setFiles((prev) => prev.filter((_, idx) => idx !== i))}
-                  className="text-danger hover:underline"
-                >
-                  Remove
-                </button>
-              </li>
+                file={f}
+                onRemove={() => setFiles((prev) => prev.filter((_, idx) => idx !== i))}
+              />
             ))}
-          </ul>
+          </div>
         )}
       </div>
 

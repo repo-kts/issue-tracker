@@ -8,12 +8,16 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // original palette (used across the app)
-        bg: "#0a0a0b",
-        panel: "#111114",
-        border: "#1f1f24",
-        muted: "#6b6b75",
-        text: "#e8e8ea",
+        // Semantic UI tokens — driven by CSS variables in globals.css so
+        // they flip automatically between the dark and light themes.
+        bg: "var(--color-bg)",
+        surface: "var(--color-surface)",
+        panel: "var(--color-panel)",
+        elevated: "var(--color-elevated)",
+        border: "var(--color-border)",
+        muted: "var(--color-muted)",
+        text: "var(--color-text)",
+        // accent / status colors read well on both themes, so they stay fixed
         accent: "#f97316",
         accentSoft: "#fed7aa",
         danger: "#ef4444",

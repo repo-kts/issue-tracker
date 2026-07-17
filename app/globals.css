@@ -5,7 +5,19 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
+  color-scheme: light dark;
+
+  /* Semantic UI tokens — dark defaults. Consumed via Tailwind (bg-bg,
+     bg-panel, bg-surface, bg-elevated, border-border, text-text,
+     text-muted) so they flip automatically with the light overrides below. */
+  --color-bg: #0a0a0b;
+  --color-surface: #08080a;
+  --color-panel: #111114;
+  --color-elevated: #17171b;
+  --color-border: #1f1f24;
+  --color-muted: #6b6b75;
+  --color-text: #e8e8ea;
+
   /* Editorial palette */
   --paper: #efe6d3;
   --paper-soft: #d7cdb8;
@@ -22,10 +34,49 @@
   --slate: #6a89a8;
 }
 
+/* Light theme — auto-selected from the OS/browser setting, UNLESS the user
+   has explicitly forced dark via the theme toggle (data-theme="dark"). */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --color-bg: #faf9f7;
+    --color-surface: #f1efeb;
+    --color-panel: #ffffff;
+    --color-elevated: #f4f2ee;
+    --color-border: #e5e3de;
+    --color-muted: #6b6862;
+    --color-text: #1c1a17;
+  }
+}
+
+/* Manual override: user picked Light explicitly (wins even if OS is dark). */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --color-bg: #faf9f7;
+  --color-surface: #f1efeb;
+  --color-panel: #ffffff;
+  --color-elevated: #f4f2ee;
+  --color-border: #e5e3de;
+  --color-muted: #6b6862;
+  --color-text: #1c1a17;
+}
+
+/* Manual override: user picked Dark explicitly (wins even if OS is light). */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-bg: #0a0a0b;
+  --color-surface: #08080a;
+  --color-panel: #111114;
+  --color-elevated: #17171b;
+  --color-border: #1f1f24;
+  --color-muted: #6b6b75;
+  --color-text: #e8e8ea;
+}
+
 html,
 body {
-  background: #0a0a0b;
-  color: #e8e8ea;
+  background: var(--color-bg);
+  color: var(--color-text);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -33,34 +84,60 @@ body {
 
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex select-none items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-all duration-150 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50;
   }
   .btn-primary {
-    @apply btn bg-accent text-black hover:bg-orange-400;
+    @apply btn bg-accent text-black shadow-sm hover:bg-orange-400 hover:shadow-md hover:shadow-accent/20;
   }
   .btn-secondary {
-    @apply btn border border-border bg-panel text-text hover:bg-[#17171b];
+    @apply btn border border-border bg-panel text-text hover:border-muted hover:bg-elevated;
   }
   .btn-ghost {
     @apply btn text-text hover:bg-panel;
   }
   .input {
-    @apply w-full rounded-md border border-border bg-panel px-3 py-2 text-sm text-text placeholder:text-muted focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent;
+    @apply w-full rounded-md border border-border bg-panel px-3 py-2 text-sm text-text transition-colors placeholder:text-muted focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent;
   }
   .label {
     @apply mb-1.5 block text-xs font-medium uppercase tracking-wide text-muted;
   }
   .card {
-    @apply rounded-lg border border-border bg-panel;
+    @apply rounded-lg border border-border bg-panel shadow-sm;
   }
   .pill {
-    @apply inline-flex items-center gap-1 rounded-full border border-border bg-[#17171b] px-2.5 py-0.5 text-xs font-medium text-text;
+    @apply inline-flex items-center gap-1 rounded-full border border-border bg-elevated px-2.5 py-0.5 text-xs font-medium text-text;
   }
+}
+
+/* Visible keyboard-focus ring for anyone navigating without a mouse. Uses
+   :focus-visible so it never shows on plain mouse clicks. */
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible,
+summary:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--color-bg),
+    0 0 0 4px #f97316;
+  border-radius: 6px;
 }
 
 ::selection {
   background: #f97316;
   color: #0a0a0b;
+}
+
+/* Respect users who prefer reduced motion: keep color changes, drop
+   transforms and long transitions. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* ---------- editorial scope (for issue detail page) ---------- */
